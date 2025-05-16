@@ -14,7 +14,7 @@ descargar_bases <- function(año_seleccionado) {
   #============================#
   
   # URL del archivo
-  url <- "https://raw.githubusercontent.com/Manumarc/Indicadores-censo-escolar/main/Libro%20de%20c%C3%B3digos.xlsx"
+  url <- "https://raw.githubusercontent.com/Manumarc/Indicadores-censo-escolar/main/Libro_de_codigos.xlsx"
   
   # Ruta de destino
   destino <- "01 Bases/Libro_de_codigos.xlsx"
