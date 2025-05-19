@@ -15,10 +15,24 @@ descargar_bases(c("2023","2024"))
 ```
 ## Cálculo de indicadores
 
+### Situación de saneamiento legal
+
 La función "cal_indicador" permite calcular diferentes indicadores para diferentes años del censo escolar de acuerdo con los años descargados. 
 
 ```
 # Calcular el indicador de situación de saneamiento del local educativo del año 2023
 cal_indicador("Saneamiento","2023")
 
+```
+### Servicios básicos (luz, agua, desagüe)
+
+```
+# Calcular el indicador de abastecimiento de agua conectado a la red pública del local educativo del año 2024
+cal_indicador("Agua","2024")
+
+# Calcular el indicador de tipo de desagüe conectado a la red pública del local educativo del año 2024
+cal_indicador("Desagüe","2024")
+
+# Calcular el indicador fuente de luz conectada a la red pública del local educativo del año 2024
+cal_indicador("Luz","2024")
 ```
