@@ -24,7 +24,7 @@ La función "cal_indicador" permite calcular diferentes indicadores para diferen
 cal_indicador("Saneamiento","2023")
 
 ```
-### Servicios básicos (luz, agua, desagüe)
+### Servicios básicos (agua, desagüe, luz)
 
 ```
 # Calcular el indicador de abastecimiento de agua conectado a la red pública del local educativo del año 2024
