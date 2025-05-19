@@ -167,13 +167,22 @@ cal_indicador <- function(nom_indicador,nom_año){
   #====================================================#
   
   bd_1 <- read.dbf(paste0("01 Bases/",nombre_base), as.is = TRUE) %>%
-    mutate(CUADRO = case_when(CUADRO %in% cuadro ~ uniq_cuadro,
-                              TRUE ~ CUADRO)) %>%
-    filter(NROCED %in% "11") %>% 
-    filter(CUADRO %in% uniq_cuadro) %>% 
-    rename_with(~nombres_a_renombrar[.x], 
-                .cols = names(nombres_a_renombrar)[names(nombres_a_renombrar) %in% names(.)])
-  
+    bd_1 <- read.dbf(paste0("01 Bases/",nombre_base), as.is = TRUE) %>% 
+  { 
+    bd_1 <- .
+    if (all(c("CUADRO","NROCED") %in% names(bd_1))) {
+      
+      bd_1 <- bd_1 %>%
+        mutate(CUADRO = case_when(CUADRO %in% cuadro ~ uniq_cuadro,
+                                  TRUE ~ CUADRO)) %>%
+        filter(NROCED %in% "11") %>%
+        filter(CUADRO %in% uniq_cuadro)
+    }
+    bd_1
+  } %>%
+  rename_with(~ nombres_a_renombrar[.x],
+              .cols = names(nombres_a_renombrar)[names(nombres_a_renombrar) %in% names(.)])
+    
   if (nom_indicador %in% "Saneamiento"){
     
     # Construcción de base de datos final #
@@ -327,6 +336,5 @@ cal_indicador <- function(nom_indicador,nom_año){
     "Sigue intentando"
     
   }
-  
   
 }
