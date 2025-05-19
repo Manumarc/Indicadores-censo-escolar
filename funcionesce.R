@@ -126,7 +126,7 @@ cal_indicador <- function(nom_indicador,nom_año){
   
   # Nombre de la base de datos a llamar 
   
-  nombre_base <-base %>% 
+  nombre_base <- base %>% 
     select(nom_base) %>% 
     pull() %>% 
     unique()
@@ -167,21 +167,21 @@ cal_indicador <- function(nom_indicador,nom_año){
   #====================================================#
   
   bd_1 <- read.dbf(paste0("01 Bases/",nombre_base), as.is = TRUE) %>%
-  { 
-    bd_1 <- .
-    if (all(c("CUADRO","NROCED") %in% names(bd_1))) {
-      
-      bd_1 <- bd_1 %>%
-        mutate(CUADRO = case_when(CUADRO %in% cuadro ~ uniq_cuadro,
-                                  TRUE ~ CUADRO)) %>%
-        filter(NROCED %in% "11") %>%
-        filter(CUADRO %in% uniq_cuadro)
-    }
-    bd_1
-  } %>%
-  rename_with(~ nombres_a_renombrar[.x],
-              .cols = names(nombres_a_renombrar)[names(nombres_a_renombrar) %in% names(.)])
-    
+    { 
+      bd_1 <- .
+      if (all(c("CUADRO","NROCED") %in% names(bd_1))) {
+        
+        bd_1 <- bd_1 %>%
+          mutate(CUADRO = case_when(CUADRO %in% cuadro ~ uniq_cuadro,
+                                    TRUE ~ CUADRO)) %>%
+          filter(NROCED %in% "11") %>%
+          filter(CUADRO %in% uniq_cuadro)
+      }
+      bd_1
+    } %>%
+    rename_with(~ nombres_a_renombrar[.x],
+                .cols = names(nombres_a_renombrar)[names(nombres_a_renombrar) %in% names(.)])
+  
   if (nom_indicador %in% "Saneamiento"){
     
     # Construcción de base de datos final #
@@ -329,6 +329,270 @@ cal_indicador <- function(nom_indicador,nom_año){
     
     return(infraula_1)
     
+    
+  } else if(nom_indicador %in% "Internet"){
+    
+    # Construcción de base de datos final #
+    #=====================================#
+    
+    bd_final <- bd_1 %>% 
+      select(CODLOCAL, internet) %>% 
+      mutate(internet = case_when(internet %in% "2" ~ "NO",
+                                  internet %in% "1" ~ "Sí",
+                                  TRUE ~ internet)) %>% 
+      rename(!!paste0("internet",nom_año) := internet)
+    
+    return(bd_final)
+    
+  } else if(nom_indicador %in% "Mobiliario aulas"){
+    
+    # Construcción de base de datos final #
+    #=====================================#
+    
+    # Nombre de las variables 
+    
+    nombre_preg2 <- nombre_preg[-1]
+    
+    # Base con id
+  
+    bd_id <- bd_1 %>% 
+      select(CODLOCAL) %>% 
+      unique()
+    
+    # Base de datos con variables para construir indicadores
+    
+    temp1 <- bd_1 %>% 
+      filter(NROCED %in% "11") %>% 
+      filter(CUADRO %in% "CAULAS") %>% 
+      filter(aula_filtro_1 %in% "1") %>% 
+      group_by(CODLOCAL) %>% 
+      summarise_at(vars(nombre_preg2),
+                   ~sum(., na.rm = T))  
+    
+    # Construcción de indicador de mesas 
+    
+    mesas <- temp1 %>%
+      mutate_at(vars(mesastot_1,mesastot_2),
+                ~case_when(. %in% 0 ~ NA,
+                           TRUE ~ .)) %>% 
+      mutate(mesastot = rowSums(across(c(mesastot_1, mesastot_2)), na.rm = TRUE),
+             mesasbe = rowSums(across(c(mesasbe_1, mesasbe_2)), na.rm = TRUE)) %>% 
+      filter(!mesastot %in% 0) %>% 
+      mutate(mesas = redondear(mesasbe/mesastot*100,1)) %>% 
+      select(CODLOCAL,mesas)
+    
+    # Construcción de indicador de sillas
+    
+    sillas <- temp1 %>% 
+      group_by(CODLOCAL) %>% 
+      summarise_at(vars(sillastot,sillasbe),
+                   ~sum(., na.rm = T)) %>% 
+      filter(!sillastot %in% 0) %>% 
+      mutate(sillas = redondear(sillasbe/sillastot*100,1)) %>% 
+      select(CODLOCAL, sillas)
+    
+    # Construcción de indicador de pizarras
+    
+    pizarras <- temp1 %>% 
+      group_by(CODLOCAL) %>% 
+      summarise_at(vars(pizarratot,pizarrabe),
+                   ~sum(., na.rm = T)) %>% 
+      filter(!pizarratot %in% 0) %>% 
+      mutate(pizarras = redondear(pizarrabe/pizarratot*100,1)) %>% 
+      select(CODLOCAL, pizarras)
+    
+    # Integración de indicadores
+    
+    mobaula_1 <- reduce(list(bd_id,mesas,sillas,pizarras), left_join, by = "CODLOCAL") %>% 
+      rename(!!paste0("mesas",nom_año) := mesas, !!paste0("sillas",nom_año) := sillas, !!paste0("pizarras",nom_año) := pizarras)
+    
+    return(mobaula_1)
+    
+  } else if(nom_indicador %in% "Espacios educativos"){
+    
+    # Construcción de base de datos final #
+    #=====================================#
+    
+    ambientes <- c("004", "005",                              # Salas
+                   "011", "012", "013", "015",                # Bibliotecas y ambientes de innovación pedagógica
+                   "061", "062",                              # Espacios deportivos
+                   "066", "067", "070", "072",                # Bienestar
+                   "084", "088",                              # Servicios generales
+                   "097", "098", "099", "100", "103","104")   # Gestión administrativa y pedagógica
+    
+    nom_ambientes <- c("Sala de usos múltiples", "Auditorio", 
+                       "Biblioteca tipo 1", "Biblioteca tipo 2", "Biblioteca tipo 3", "Aula de innovación pedagógica", 
+                       "Gimnasio", "Coliseo deportivo", 
+                       "Quiosco", "Cafetería", "Tópico", "Espacio temporal para docente", 
+                       "Depósito general", "Cuarto de limpieza", 
+                       "Dirección", "Subdirección", "Administración", "Oficina de coordinación pedagógica", "Sala de docentes", "Sala de reuniones")
+    
+    nombres_a_renombrar <-  setNames(paste0(nom_ambientes,nom_año),ambientes)
+    
+    amb_1 <- bd_1 %>% 
+      filter(espacio_1 %in% ambientes) %>% 
+      filter(espacio_2 %in% "1") %>% 
+      filter(str_detect(espacio_3, "B0|F0")) %>% 
+      mutate(valor = 1) %>% 
+      select(CODLOCAL,espacio_1,valor) %>% 
+      distinct(CODLOCAL, espacio_1, .keep_all = TRUE) %>% 
+      pivot_wider(
+        names_from = espacio_1,
+        values_from = valor,
+        values_fill = list(valor = 0)
+      ) %>% 
+      mutate(biblioteca = case_when(`011` %in% 1 | `012` %in% 1 | `013` %in% 1 ~ 1,
+                                    TRUE ~ 0)) %>% 
+      select(-c(`011`,`012`,`013`))
+    
+    amb_2 <- amb_1 %>% 
+      rename_with(~ nombres_a_renombrar[.x], 
+                  .cols = all_of(intersect(names(amb_1), ambientes))) %>% 
+      rename(!!paste0("biblioteca",nom_año) := biblioteca)
+    
+    return(amb_2)
+    
+  } else if(nom_indicador %in% "Infraestructura SSHH"){
+    
+    # Construcción de base de datos final #
+    #=====================================#
+    
+    # Construcción de base general
+    
+    infra_sshh <- bd_1 %>% 
+      filter(sshh_1 %in% c("133","134","135","136","137","138","139")) %>% 
+      filter(str_detect(sshh_2, "B0|F0")) %>% 
+      select(CODLOCAL,NUMERO,sshh_pared,sshh_techo,sshh_piso) %>% 
+      mutate_at(vars(sshh_pared,sshh_techo,sshh_piso),
+                ~case_when(. %in% "01" ~ "1",
+                           is.na(.) ~ NA_character_,
+                           TRUE ~ "0")) %>% 
+      mutate_at(vars(sshh_pared,sshh_techo,sshh_piso),
+                funs(as.numeric))
+    
+    # Base con id
+    
+    bd_id <- infra_sshh %>% 
+      select(CODLOCAL) %>% 
+      unique()
+    
+    # Rango de CODLOCAL duplicados 
+    
+    rango <- infra_sshh %>% 
+      select(NUMERO) %>% 
+      unique() %>% 
+      pull()
+    
+    # Pared en buen estado 
+    
+    bd_pared <- infra_sshh %>% 
+      select(CODLOCAL,NUMERO,sshh_pared) %>% 
+      pivot_wider(names_from = NUMERO,
+                  values_from = c(sshh_pared)) %>% 
+      rowwise() %>% 
+      mutate(no_na = sum(!is.na(c_across(min(rango):max(rango)))),
+             tot_1 = sum(c_across(min(rango):max(rango)) == "1", na.rm = TRUE)) %>% 
+      mutate(paredsshh := redondear(tot_1/no_na * 100, 1)) %>% 
+      select(CODLOCAL,paredsshh)
+    
+    # Techo en buen estado 
+    
+    bd_techo <- infra_sshh %>% 
+      select(CODLOCAL,NUMERO,sshh_techo) %>% 
+      pivot_wider(names_from = NUMERO,
+                  values_from = c(sshh_techo)) %>% 
+      rowwise() %>% 
+      mutate(no_na = sum(!is.na(c_across(min(rango):max(rango)))),
+             tot_1 = sum(c_across(min(rango):max(rango)) == "1", na.rm = TRUE)) %>% 
+      mutate(techosshh := redondear(tot_1/no_na * 100, 1)) %>% 
+      select(CODLOCAL,techosshh)
+    
+    # Piso en buen estado 
+    
+    bd_piso <- infra_sshh %>% 
+      select(CODLOCAL,NUMERO,sshh_piso) %>% 
+      pivot_wider(names_from = NUMERO,
+                  values_from = c(sshh_piso)) %>% 
+      rowwise() %>% 
+      mutate(no_na = sum(!is.na(c_across(min(rango):max(rango)))),
+             tot_1 = sum(c_across(min(rango):max(rango)) == "1", na.rm = TRUE)) %>% 
+      mutate(pisosshh := redondear(tot_1/no_na * 100, 1)) %>% 
+      select(CODLOCAL,pisosshh)
+    
+    # Integración de bases de datos
+    
+    infra_baños <- reduce(list(bd_id,bd_pared,bd_techo,bd_piso), left_join, by = "CODLOCAL") %>% 
+      rename(!!paste0("pisosshh",nom_año) := pisosshh,!!paste0("techosshh",nom_año) := techosshh,!!paste0("paredsshh",nom_año) := paredsshh)
+    
+    return(infra_baños)
+    
+  } else if (nom_indicador %in% "Mobiliario SSHH"){
+    
+    # Base con id
+    
+    bd_id <- bd_1 %>% 
+      select(CODLOCAL) %>% 
+      unique()
+    
+    # Construcción de base de datos final #
+    #=====================================#
+    
+    mobiliariobaño_fun <- function(bd_datos, nom_mobiliario){
+      
+      if (nom_mobiliario %in% "Baños"){
+        
+        nom_tot1 <- "letrinatot"
+        nom_tot1_be <- "letrinabe"
+        nom_tot2 <- "inodorotot"
+        nom_tot2_be <- "inodorobe"   
+        nom_baño_var <- "baños"
+        
+      } else if (nom_mobiliario %in% "Lavatorios"){
+        
+        nom_tot1 <- "lavatoriotot_1"
+        nom_tot1_be <- "lavatoriobe_1"
+        nom_tot2 <- "lavatoriotot_2"
+        nom_tot2_be <- "lavatoriobe_2"   
+        nom_baño_var <- "lavatorios"
+        
+      } else if (nom_mobiliario %in% "Urinarios"){
+        
+        nom_tot1 <- "urinariotot_1"
+        nom_tot1_be <- "urinariobe_1"
+        nom_tot2 <- "urinariotot_2"
+        nom_tot2_be <- "urinariobe_2"   
+        nom_baño_var <- "urinarios"
+        
+      }
+      
+      bd_mobbaños <- bd_datos %>% 
+        filter(sshh_1 %in% c("133","134","135","136","137","138","139")) %>% 
+        filter(str_detect(sshh_2, "B0|F0")) %>% 
+        select(CODLOCAL, !!sym(nom_tot1), !!sym(nom_tot1_be),!!sym(nom_tot2),!!sym(nom_tot2_be)) %>% 
+        group_by(CODLOCAL) %>% 
+        summarise(!!sym(nom_tot1) := sum(!!sym(nom_tot1), na.rm = T),
+                  !!sym(nom_tot1_be) := sum(!!sym(nom_tot1_be), na.rm = T),
+                  !!sym(nom_tot2) := sum(!!sym(nom_tot2), na.rm = T),
+                  !!sym(nom_tot2_be) := sum(!!sym(nom_tot2_be), na.rm = T)) %>% 
+        mutate(tot = !!sym(nom_tot1) + !!sym(nom_tot2),
+               tot_1 = !!sym(nom_tot1_be) + !!sym(nom_tot2_be)) %>% 
+        mutate(!!sym(nom_baño_var) := redondear(tot_1/tot*100,1)) %>% 
+        select(CODLOCAL,!!sym(nom_baño_var))
+      
+      return(bd_mobbaños)
+      
+    }
+    
+    baños <- mobiliariobaño_fun(bd_1,"Baños")
+    
+    lavatorios <- mobiliariobaño_fun(bd_1,"Lavatorios")
+    
+    urinarios <- mobiliariobaño_fun(bd_1,"Urinarios")
+    
+    mobiliario_baños <- reduce(list(bd_id,baños,lavatorios,urinarios), left_join, by = "CODLOCAL") %>% 
+      rename(!!paste0("baños",nom_año) := baños, !!paste0("lavatorios",nom_año) := lavatorios, !!paste0("urinarios",nom_año) := urinarios)
+
+    return(mobiliario_baños)
     
   } else {
     
