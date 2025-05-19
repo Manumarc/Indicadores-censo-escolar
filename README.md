@@ -1,4 +1,4 @@
-# Indicadores-censo-escolar
+# Indicadores del censo escolar
 Funciones para analizar diferentes indicadores del censo escolar
 
 ## Descargar bases
