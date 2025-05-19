@@ -167,7 +167,6 @@ cal_indicador <- function(nom_indicador,nom_año){
   #====================================================#
   
   bd_1 <- read.dbf(paste0("01 Bases/",nombre_base), as.is = TRUE) %>%
-    bd_1 <- read.dbf(paste0("01 Bases/",nombre_base), as.is = TRUE) %>% 
   { 
     bd_1 <- .
     if (all(c("CUADRO","NROCED") %in% names(bd_1))) {
