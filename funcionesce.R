@@ -4,12 +4,14 @@
 
 descargar_bases <- function(año_seleccionado) {
   
+  #============================#
   # Crear carpeta si no existe #
   #============================#
   
   carpeta_destino <- "01 Bases"
   if (!dir.exists(carpeta_destino)) dir.create(carpeta_destino, recursive = TRUE)
   
+  #============================#
   # Descargar libro de códigos #
   #============================#
   
@@ -22,6 +24,7 @@ descargar_bases <- function(año_seleccionado) {
   # Descargar el archivo
   download.file(url, destfile = destino, mode = "wb")
   
+  #==========================#
   # Descargar bases de datos #
   #==========================#
   
@@ -51,9 +54,7 @@ descargar_bases <- function(año_seleccionado) {
   nombres23 <- c("Padron_23", "Loc_lineal_2_23", "Loc_P108_SaFiLe_23", "Loc_P200_ServBa_23",
                  "Loc_P501_Aulas_23", "Loc_P601_OtEsp_23", "Loc_P701_SSHH_23")
   
-  # Función para descargar, descomprimir y renombrar archivos #
-  #===========================================================#
-  
+  # Función para descargar, descomprimir y renombrar archivos
   descargar_y_procesar <- function(urls, nombres) {
     
     for (i in seq_along(urls)) {
@@ -64,12 +65,10 @@ descargar_bases <- function(año_seleccionado) {
       ruta_zip <- file.path(carpeta_destino, nombre_zip)
       
       # Descargar zip
-      
       download.file(url, destfile = ruta_zip, mode = "wb")
       message("Descargado: ", nombre_zip)
       
       # Descomprimir y renombrar
-      
       temp_dir <- tempdir()
       archivos_extraidos <- unzip(ruta_zip, exdir = temp_dir)
       
@@ -79,26 +78,21 @@ descargar_bases <- function(año_seleccionado) {
         nuevo_nombre <- paste0(nombre_logico, ".", ext)
         file.copy(from = archivo, to = file.path(carpeta_destino, nuevo_nombre), overwrite = TRUE)
         message("Extraído y renombrado: ", nuevo_nombre)
-        
       }
     }
   }
   
-  # Ejecutar según año seleccionado #
-  #=================================#
-  
+  # Ejecutar según año seleccionado
   if ("2024" %in% año_seleccionado) {
     
     message("Procesando archivos 2024...")
     descargar_y_procesar(nom_url24, nombres24)
-    
   }
   
   if ("2023" %in% año_seleccionado) {
     
     message("Procesando archivos 2023...")
     descargar_y_procesar(nom_url23, nombres23)
-    
   }
   
   message("Todos los archivos seleccionados han sido descargados y procesados.")
