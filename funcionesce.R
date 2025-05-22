@@ -77,7 +77,6 @@ descargar_bases <- function(año_seleccionado) {
   
     message("Procesando archivos ...")
     descargar_y_procesar(nom_url, nombres_var)
-
   
   message("Todos los archivos seleccionados han sido descargados y procesados.")
   
