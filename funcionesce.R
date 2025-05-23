@@ -324,7 +324,7 @@ cal_indicador <- function(nom_indicador,nom_año){
     
     bd_final <- bd_1 %>% 
       select(CODLOCAL, internet) %>% 
-      mutate(internet = case_when(internet %in% "2" ~ "NO",
+      mutate(internet = case_when(internet %in% "2" ~ "No",
                                   internet %in% "1" ~ "Sí",
                                   internet %in% "NO" ~ "No",
                                   internet %in% "SI" ~ "Sí",
