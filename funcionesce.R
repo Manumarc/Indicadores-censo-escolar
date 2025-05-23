@@ -145,13 +145,13 @@ cal_indicador <- function(nom_indicador,nom_año){
   #====================================================#
   
   bd_1 <- read.dbf(paste0("01 Bases/",nombre_base), as.is = TRUE) %>%
-    mutate(NROCED = case_when(NROCED %in% "C11" ~ "11",
-                            TRUE ~ NROCED)) %>% 
     { 
       bd_1 <- .
       if (all(c("CUADRO","NROCED") %in% names(bd_1))) {
         
         bd_1 <- bd_1 %>%
+          mutate(NROCED = case_when(NROCED %in% "C11" ~ "11",
+                            TRUE ~ NROCED)) %>% 
           mutate(CUADRO = case_when(CUADRO %in% cuadro ~ uniq_cuadro,
                                     TRUE ~ CUADRO)) %>%
           filter(NROCED %in% "11") %>%
@@ -326,6 +326,8 @@ cal_indicador <- function(nom_indicador,nom_año){
       select(CODLOCAL, internet) %>% 
       mutate(internet = case_when(internet %in% "2" ~ "NO",
                                   internet %in% "1" ~ "Sí",
+                                  internet %in% "NO" ~ "No",
+                                  internet %in% "SI" ~ "Sí",
                                   is.na(internet) ~ NA_character_,
                                   TRUE ~ internet)) %>% 
       rename(!!paste0("internet",nom_año) := internet)
