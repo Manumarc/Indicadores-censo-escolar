@@ -91,7 +91,7 @@ cal_indicador <- function(nom_indicador,nom_año){
   # Libro de códigos #
   #==================#
   
-  libcod <- read.xlsx("01 Bases/Libro_de_codigos.xlsx", sheet = 3)
+  libcod <- read.xlsx("01 Bases/Libro_de_codigos.xlsx", sheet = 4)
   
   # Selección de grupo de indicadores a calcular #
   #==============================================#
@@ -145,6 +145,8 @@ cal_indicador <- function(nom_indicador,nom_año){
   #====================================================#
   
   bd_1 <- read.dbf(paste0("01 Bases/",nombre_base), as.is = TRUE) %>%
+    mutate(NROCED = case_when(NROCED %in% "C11" ~ "11",
+                            TRUE ~ NROCED)) %>% 
     { 
       bd_1 <- .
       if (all(c("CUADRO","NROCED") %in% names(bd_1))) {
@@ -168,16 +170,20 @@ cal_indicador <- function(nom_indicador,nom_año){
     # Rango de total de terrenos que tiene el local escolar 
     
     rango <- bd_1 %>% 
-      select(ID_TERR) %>% 
+      select(!!sym(nombre_preg[[1]])) %>% 
       pull() %>% 
       unique()
     
     #Base de datos con el indicador
     
     bd_final <- bd_1 %>% 
-      select(CODLOCAL,ID_TERR,!!sym(nombre_preg)) %>% 
-      pivot_wider(names_from = ID_TERR,
-                  values_from = !!sym(nombre_preg)) %>% 
+      mutate(!!sym(nombre_preg[[2]]) := case_when(!!sym(nombre_preg[[2]]) %in% "SI" ~ "1",
+                                   !!sym(nombre_preg[[2]]) %in% "NO" ~ "2",
+                                   is.na(!!sym(nombre_preg[[2]])) ~ NA_character_,
+                                   TRUE ~ !!sym(nombre_preg[[2]]))) %>% 
+      select(CODLOCAL,!!sym(nombre_preg[[1]]),!!sym(nombre_preg[[2]])) %>% 
+      pivot_wider(names_from = !!sym(nombre_preg[[1]]),
+                  values_from = !!sym(nombre_preg[[2]])) %>% 
       rowwise() %>%
       mutate(no_na = sum(!is.na(c_across(first(rango):last(rango)))),
              tot_1 = sum(c_across(first(rango):last(rango)) == "1", na.rm = TRUE)) %>%
@@ -271,7 +277,11 @@ cal_indicador <- function(nom_indicador,nom_año){
     var_tot <- c(nombre_preg[[3]],nombre_preg[[5]])
     
     infraula_1 <- bd_1 %>% 
-      filter(aula_filtro_1 %in% "1") %>% 
+      mutate(!!sym(nombre_preg[[2]]) := case_when(!!sym(nombre_preg[[2]]) %in% "SI" ~ "1",
+                                       !!sym(nombre_preg[[2]]) %in% "NO" ~ "2",
+                                       is.na(!!sym(nombre_preg[[2]])) ~ NA_character_,
+                                       TRUE ~ !!sym(nombre_preg[[2]]))) %>% 
+      filter(!!sym(nombre_preg[[2]]) %in% "1") %>% 
       mutate(ventanabe = case_when(marcovenbe %in% c("01") & vidriobe %in% c("01") ~ "01",
                                    is.na(marcovenbe) | is.na(vidriobe) ~ NA_character_,
                                    TRUE ~ "00")) %>% 
@@ -307,7 +317,6 @@ cal_indicador <- function(nom_indicador,nom_año){
     
     return(infraula_1)
     
-    
   } else if(nom_indicador %in% "Internet"){
     
     # Construcción de base de datos final #
@@ -317,6 +326,7 @@ cal_indicador <- function(nom_indicador,nom_año){
       select(CODLOCAL, internet) %>% 
       mutate(internet = case_when(internet %in% "2" ~ "NO",
                                   internet %in% "1" ~ "Sí",
+                                  is.na(internet) ~ NA_character_,
                                   TRUE ~ internet)) %>% 
       rename(!!paste0("internet",nom_año) := internet)
     
@@ -342,6 +352,10 @@ cal_indicador <- function(nom_indicador,nom_año){
     temp1 <- bd_1 %>% 
       filter(NROCED %in% "11") %>% 
       filter(CUADRO %in% "CAULAS") %>% 
+      mutate(aula_filtro_1 = case_when(aula_filtro_1 %in% "SI" ~ "1",
+                                   aula_filtro_1 %in% "NO" ~ "2",
+                                   is.na(aula_filtro_1) ~ NA_character_,
+                                   TRUE ~ aula_filtro_1)) %>% 
       filter(aula_filtro_1 %in% "1") %>% 
       group_by(CODLOCAL) %>% 
       summarise_at(vars(nombre_preg2),
@@ -391,24 +405,37 @@ cal_indicador <- function(nom_indicador,nom_año){
     # Construcción de base de datos final #
     #=====================================#
     
-    ambientes <- c("004", "005",                              # Salas
-                   "011", "012", "013", "015",                # Bibliotecas y ambientes de innovación pedagógica
-                   "061", "062",                              # Espacios deportivos
-                   "066", "067", "070", "072",                # Bienestar
-                   "084", "088",                              # Servicios generales
-                   "097", "098", "099", "100", "103","104")   # Gestión administrativa y pedagógica
+    ambientes <- base %>% 
+      filter(nom_pregunta %in% "espacio_1") %>% 
+      select(codigo_resp) %>% 
+      mutate(codigo_resp = str_trim(codigo_resp, side = "right")) %>% 
+      str_split("; ") %>% 
+      as.data.frame() %>% 
+      pull()
     
-    nom_ambientes <- c("Sala de usos múltiples", "Auditorio", 
-                       "Biblioteca tipo 1", "Biblioteca tipo 2", "Biblioteca tipo 3", "Aula de innovación pedagógica", 
-                       "Gimnasio", "Coliseo deportivo", 
-                       "Quiosco", "Cafetería", "Tópico", "Espacio temporal para docente", 
-                       "Depósito general", "Cuarto de limpieza", 
-                       "Dirección", "Subdirección", "Administración", "Oficina de coordinación pedagógica", "Sala de docentes", "Sala de reuniones")
+    nom_ambientes <- base %>% 
+      filter(nom_pregunta %in% "espacio_1") %>% 
+      select(respuesta) %>% 
+      mutate(respuesta = str_trim(respuesta, side = "right")) %>% 
+      str_split("; ") %>% 
+      as.data.frame() %>% 
+      pull()
+    
+    # Salas
+    # Bibliotecas y ambientes de innovación pedagógica
+    # Espacios deportivos
+    # Bienestar
+    # Servicios generales
+    # Gestión administrativa y pedagógica
     
     nombres_a_renombrar <-  setNames(paste0(nom_ambientes,nom_año),ambientes)
     
     amb_1 <- bd_1 %>% 
       filter(espacio_1 %in% ambientes) %>% 
+      mutate(espacio_2 = case_when(espacio_2 %in% "SI" ~ "1",
+                                   espacio_2 %in% "NO" ~ "2",
+                                   is.na(espacio_2) ~ NA_character_,
+                                   TRUE ~ espacio_2)) %>% 
       filter(espacio_2 %in% "1") %>% 
       filter(str_detect(espacio_3, "B0|F0")) %>% 
       mutate(valor = 1) %>% 
@@ -435,10 +462,20 @@ cal_indicador <- function(nom_indicador,nom_año){
     # Construcción de base de datos final #
     #=====================================#
     
+    # Tipos de baño considerados 
+    
+    tip_baño <- base %>% 
+      filter(nom_pregunta %in% "sshh_1") %>% 
+      select(codigo_resp) %>% 
+      mutate(codigo_resp = str_trim(codigo_resp, side = "right")) %>% 
+      str_split("; ") %>% 
+      as.data.frame() %>% 
+      pull()
+    
     # Construcción de base general
     
     infra_sshh <- bd_1 %>% 
-      filter(sshh_1 %in% c("133","134","135","136","137","138","139")) %>% 
+      filter(sshh_1 %in% tip_baño) %>% 
       filter(str_detect(sshh_2, "B0|F0")) %>% 
       select(CODLOCAL,NUMERO,sshh_pared,sshh_techo,sshh_piso) %>% 
       mutate_at(vars(sshh_pared,sshh_techo,sshh_piso),
@@ -512,6 +549,16 @@ cal_indicador <- function(nom_indicador,nom_año){
       select(CODLOCAL) %>% 
       unique()
     
+    # Tipos de baño considerados 
+    
+    tip_baño <- base %>% 
+      filter(nom_pregunta %in% "sshh_1") %>% 
+      select(codigo_resp) %>% 
+      mutate(codigo_resp = str_trim(codigo_resp, side = "right")) %>% 
+      str_split("; ") %>% 
+      as.data.frame() %>% 
+      pull()
+    
     # Construcción de base de datos final #
     #=====================================#
     
@@ -544,7 +591,7 @@ cal_indicador <- function(nom_indicador,nom_año){
       }
       
       bd_mobbaños <- bd_datos %>% 
-        filter(sshh_1 %in% c("133","134","135","136","137","138","139")) %>% 
+        filter(sshh_1 %in% tip_baño) %>% 
         filter(str_detect(sshh_2, "B0|F0")) %>% 
         select(CODLOCAL, !!sym(nom_tot1), !!sym(nom_tot1_be),!!sym(nom_tot2),!!sym(nom_tot2_be)) %>% 
         group_by(CODLOCAL) %>% 
