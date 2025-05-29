@@ -118,7 +118,7 @@ Este indicador da cuenta de la condición en la que se encuentran las paredes, p
 
 El estado de conservación de los elementos de infraestructura que se han considerado toman los valores siguientes:
 
-| Código 2022 | Descripción 2022              | Código 2023+ | Descripción 2023+           |
+| Código 2022 | Descripción 2022              | Código 2023 en adelante | Descripción 2023 en adelante           |
 |-------------|-------------------------------|--------------|-----------------------------|
 | 01          | Buen estado                   | 01           | Buen estado                 |
 | 02          | Regular estado                | 02           | Regular estado              |
