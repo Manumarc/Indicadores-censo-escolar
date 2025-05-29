@@ -496,7 +496,7 @@ cal_indicador <- function(nom_indicador,nom_año){
     # Rango de CODLOCAL duplicados 
     
     rango <- infra_sshh %>% 
-      select(NUMERO) %>% 
+      dplyr::select(NUMERO) %>% 
       unique() %>% 
       pull()
     
