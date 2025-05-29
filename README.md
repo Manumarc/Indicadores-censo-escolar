@@ -22,6 +22,7 @@ descargar_bases(c("2023"))
 descargar_bases(c("2023","2024"))
 
 ```
+
 ## Cálculo de indicadores
 
 La función "cal_indicador" permite calcular diferentes indicadores para diferentes años del censo escolar de acuerdo con los años descargados. A continuación se detallan los indicadores considerados dentro de la función.
@@ -39,11 +40,13 @@ Dado que la variable está a nivel de local escolar y que dentro de cada local s
 - No saneado: si dentro del local escolar ninguno de los terrenos cuentan con saneamiento físico legal.
 
 A continuación se muestra un ejemplo para el uso de dicho indicador. 
-```
+
+```{r}
 # Calcular el indicador de situación de saneamiento del local educativo del año 2023
 cal_indicador("Saneamiento","2023")
 
 ```
+
 ### Servicios básicos (agua, desagüe, luz)
 
 ```
