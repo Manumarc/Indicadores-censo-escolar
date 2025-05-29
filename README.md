@@ -28,12 +28,17 @@ La función "cal_indicador" permite calcular diferentes indicadores para diferen
 
 ### Situación de saneamiento legal
 
-Este indicador da cuenta de la condición de saneamiento físico legal que presentan los locales de la escuela. La pregunta considera es "El terreno, ¿cuenta con saneamiento Físico Legal?" y considera dos tipos de respuestas: "Sí"; "No". Dado que la variable está a nivel de local escolar y que dentro de cada escuela se puede encontrar varios locales escolares, el indicador se construyó con tres categorías:
+Este indicador da cuenta de la condición de saneamiento físico legal que presentan los locales de la escuela. La pregunta que considera es:
 
-- Saneado: si todos los locales escolares se encuentran en terreno con saneamiento físico legal.
-- Saneado parcialmente: si alguno de los locales escolares se encuentra en terreno que no cuenta con saneamiento físico legal.
-- No saneado: si todos los locales escolares se encuentran en terreno que no cuenta con saneamiento físico legal.
+  - "El terreno, ¿cuenta con saneamiento Físico Legal?", y considera dos tipos de respuestas: "Sí"; "No". 
 
+Dado que la variable está a nivel de local escolar y que dentro de cada local se pueden encontrar varios terrenos, el indicador se construyó con tres categorías:
+
+- Saneado: si dentro del local escolar todos los terrenos cuentan con saneamiento físico legal.
+- Saneado parcialmente: si dentro del local escolar uno o varios de los terrenos no cuentan con saneamiento físico legal.
+- No saneado: si dentro del local escolar ninguno de los terrenos cuentan con saneamiento físico legal.
+
+A continuación se muestra un ejemplo para el uso de dicho indicador. 
 ```
 # Calcular el indicador de situación de saneamiento del local educativo del año 2023
 cal_indicador("Saneamiento","2023")
