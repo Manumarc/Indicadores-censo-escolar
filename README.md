@@ -48,7 +48,7 @@ Dado que la variable está a nivel de local escolar y que dentro de cada local s
 - **Saneado parcialmente**: si dentro del local escolar uno o varios de los terrenos no cuentan con saneamiento físico legal.
 - **No saneado**: si dentro del local escolar ninguno de los terrenos cuentan con saneamiento físico legal.
 
-A continuación se muestra un ejemplo para el uso de dicho indicador. 
+A A continuación se muestra un ejemplo para la construcción de dicho indicador. 
 
 ```
 # Calcular el indicador de situación de saneamiento del local educativo del año 2023 #
@@ -66,7 +66,7 @@ Este indicador da cuenta si el servicio de luz, agua y desagüe que tiene la esc
 - *Tipo de conexión de desagüe*
 - *Procedencia de abastecimiento de energía eléctrica*
 
-Para todos estos indicadores se realiza una recodificación de las diferentes opciones de respuesta de cada uno y se construye un indicador dicotómico de "Conexión a red pública" y "Sin conexión a red pública". A continuación se muestra un ejemplo para el uso de dicho indicador. 
+Para todos estos indicadores se realiza una recodificación de las diferentes opciones de respuesta de cada uno y se construye un indicador dicotómico de "Conexión a red pública" y "Sin conexión a red pública". A continuación se muestra un ejemplo para la construcción de dicho indicador. 
 
 ```
 # Calcular el indicador de abastecimiento de agua conectado a la red pública del local educativo del año 2024 #
@@ -92,7 +92,7 @@ Este indicador informa si la escuela cuenta con servicio de internet. Se ha cons
 
 - *El Local Educativo ¿Cuenta con servicio de internet?*
 
-A continuación se muestra un ejemplo para el uso de dicho indicador. 
+A continuación se muestra un ejemplo para la construcción de dicho indicador. 
 
 ```
 # Calcular el indicador de conexión a internet dentro del local educativo del año 2024 #
@@ -126,4 +126,21 @@ El estado de conservación de los elementos de infraestructura que se han consid
 | 04          | No tiene, pero lo requiere    | 04           | No aplica                   |
 | 05          | No tiene y no lo requiere     |              |                             |
 
-Dado esto, sólo se considera el código "01"
+Dado esto, sólo se considera el código "01" para la construcción de los indicadores, dando como indicador final lo siguiente: 
+
+- Porcentaje de aulas que tienen el piso en buen estado
+- Porcentaje de aulas que tienen el techo en buen estado
+- Porcentaje de aulas que tienen las paredes en buen estado
+- Porcentaje de aulas que tienen ventanas en buen estado
+- Porcentaje de aulas que tienen puerta en buen estado
+
+A continuación se muestra un ejemplo para la construcción de dicho indicador. 
+
+```
+# Calcular los indicadores de condición de la infraestructura del aula del año 2024 #
+#-----------------------------------------------------------------------------------#
+
+cal_indicador("Infraestructura aulas","2024")
+
+```
+
