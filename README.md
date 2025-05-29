@@ -74,14 +74,32 @@ Para todos estos indicadores se realiza una recodificación de las diferentes op
 
 cal_indicador("Agua","2024")
 
-# Calcular el indicador de tipo de desagüe conectado a la red pública del local educativo del año 2024 #
+# Calcular el indicador de tipo de desagüe conectado a la red pública del local educativo del año 2023 #
 #------------------------------------------------------------------------------------------------------#
 
-cal_indicador("Desagüe","2024")
+cal_indicador("Desagüe","2023")
 
-# Calcular el indicador fuente de luz conectada a la red pública del local educativo del año 2024 #
+# Calcular el indicador fuente de luz conectada a la red pública del local educativo del año 2022 #
 #-------------------------------------------------------------------------------------------------#
 
-cal_indicador("Luz","2024")
+cal_indicador("Luz","2022")
 
 ```
+
+### Servicio de internet
+
+Este indicador informa si la escuela cuenta con servicio de internet. Se ha construido con la siguiente pregunta del censo escolar:
+
+- *El Local Educativo ¿Cuenta con servicio de internet?*
+
+A continuación se muestra un ejemplo para el uso de dicho indicador. 
+
+```
+# Calcular el indicador de conexión a internet dentro del local educativo del año 2024 #
+#--------------------------------------------------------------------------------------#
+
+cal_indicador("Internet","2024")
+
+```
+
+
