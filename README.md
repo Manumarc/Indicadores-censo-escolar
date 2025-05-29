@@ -57,9 +57,9 @@ cal_indicador("Saneamiento","2023")
 
 Este indicador da cuenta si el servicio de luz, agua y desagüe que tiene la escuela presenta conexión con la red pública. Se ha construido con las siguientes preguntas del censo escolar:
 
-- Procedencia de abastecimiento de agua
-- Tipo de conexión de desagüe
-- Procedencia de abastecimiento de energía eléctrica
+- *Procedencia de abastecimiento de agua*
+- *Tipo de conexión de desagüe*
+- *Procedencia de abastecimiento de energía eléctrica*
 
 Para todos estos indicadores se realiza una recodificación de las diferentes opciones de respuesta de cada uno y se construye un indicador dicotómico de "Conexión a red pública" y "Sin conexión a red pública". A continuación se muestra un ejemplo para el uso de dicho indicador. 
 
