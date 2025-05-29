@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/2ecbef63-0294-42be-afd3-a497147638b9)# Indicadores del censo escolar
+# Indicadores del censo escolar
 
 Funciones para analizar diferentes indicadores del censo escolar.
 
