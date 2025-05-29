@@ -36,12 +36,12 @@ descargar_bases <- function(año_seleccionado) {
   # Listas de URLs y nombres
   
   nom_url <- libcod %>% 
-    select(link) %>% 
+    dplyr::select(link) %>% 
     unique() %>% 
     pull()
   
   nombres_var <- libcod %>% 
-    select(nom_base2) %>% 
+    dplyr::select(nom_base2) %>% 
     unique() %>% 
     pull()
   
@@ -105,14 +105,14 @@ cal_indicador <- function(nom_indicador,nom_año){
   # Nombre de la base de datos a llamar 
   
   nombre_base <- base %>% 
-    select(nom_base) %>% 
+    dplyr::select(nom_base) %>% 
     pull() %>% 
     unique()
   
   # Nombre de la variable 
   
   nombre_preg <- base %>% 
-    select(nom_pregunta) %>% 
+    dplyr::select(nom_pregunta) %>% 
     pull() %>% 
     unique()
   
@@ -122,19 +122,19 @@ cal_indicador <- function(nom_indicador,nom_año){
   # Nombre del cuadro 
   
   cuadro <- base %>% 
-    select(CUADRO) %>% 
+    dplyr::select(CUADRO) %>% 
     pull() %>% 
     unique()
   
   uniq_cuadro <- base %>% 
-    select(nom_cuadro) %>% 
+    dplyr::select(nom_cuadro) %>% 
     pull() %>% 
     unique()
   
   # Nombre de las preguntas 
   
   preguntas <- base %>% 
-    select(codigo_preg, nom_pregunta) %>% 
+    dplyr::select(codigo_preg, nom_pregunta) %>% 
     mutate_at(vars(codigo_preg,nom_pregunta),
               ~str_trim(., "right"))
   
@@ -170,7 +170,7 @@ cal_indicador <- function(nom_indicador,nom_año){
     # Rango de total de terrenos que tiene el local escolar 
     
     rango <- bd_1 %>% 
-      select(!!sym(nombre_preg[[1]])) %>% 
+      dplyr::select(!!sym(nombre_preg[[1]])) %>% 
       pull() %>% 
       unique()
     
@@ -181,7 +181,7 @@ cal_indicador <- function(nom_indicador,nom_año){
                                    !!sym(nombre_preg[[2]]) %in% "NO" ~ "2",
                                    is.na(!!sym(nombre_preg[[2]])) ~ NA_character_,
                                    TRUE ~ !!sym(nombre_preg[[2]]))) %>% 
-      select(CODLOCAL,!!sym(nombre_preg[[1]]),!!sym(nombre_preg[[2]])) %>% 
+      dplyr::select(CODLOCAL,!!sym(nombre_preg[[1]]),!!sym(nombre_preg[[2]])) %>% 
       pivot_wider(names_from = !!sym(nombre_preg[[1]]),
                   values_from = !!sym(nombre_preg[[2]])) %>% 
       rowwise() %>%
@@ -193,7 +193,7 @@ cal_indicador <- function(nom_indicador,nom_año){
       mutate(saneamiento = case_when(avance %in% 100 ~ "Saneado",
                                      avance %in% 0 ~ "No saneado",
                                      TRUE ~ "Saneado parcial")) %>% 
-      select(CODLOCAL,!!paste0("saneamiento",nom_año) := saneamiento)
+      dplyr::select(CODLOCAL,!!paste0("saneamiento",nom_año) := saneamiento)
     
     return(bd_final)
     
@@ -203,7 +203,7 @@ cal_indicador <- function(nom_indicador,nom_año){
     #=====================================#
     
     claves <- base %>%
-      select(codigo_resp) %>%
+      dplyr::select(codigo_resp) %>%
       str_split("; ") %>% 
       as.data.frame() %>% 
       pull()
@@ -211,7 +211,7 @@ cal_indicador <- function(nom_indicador,nom_año){
     serbas_1 <- bd_1 %>% 
       mutate(conexion = case_when(!!sym(nombre_preg) %in% claves[[1]] ~ "Conexión red pública",
                                   TRUE ~ "Sin conexión red pública")) %>%
-      select(CODLOCAL, conexion)
+      dplyr::select(CODLOCAL, conexion)
     
     # Rango de variables duplicadas #
     #-------------------------------#
@@ -220,7 +220,7 @@ cal_indicador <- function(nom_indicador,nom_año){
       group_by(CODLOCAL) %>%
       mutate(duplicado = row_number()) %>%
       ungroup() %>% 
-      select(duplicado) %>% 
+     dplyr::select(duplicado) %>% 
       unique() %>% 
       pull()
     
@@ -243,7 +243,7 @@ cal_indicador <- function(nom_indicador,nom_año){
           tot_rp == 0 ~ "Sin conexión red pública",
           TRUE ~ "Conexión red pública"
         )) %>% 
-        select(CODLOCAL, !!paste0(nombre_preg,nom_año) := serbas)
+        dplyr::select(CODLOCAL, !!paste0(nombre_preg,nom_año) := serbas)
       
     } else {
       
@@ -263,7 +263,7 @@ cal_indicador <- function(nom_indicador,nom_año){
           tot_rp == 0 ~ "Sin conexión red pública",
           TRUE ~ "Conexión red pública"
         )) %>% 
-        select(CODLOCAL, !!paste0(nombre_preg,nom_año) := serbas)
+        dplyr::select(CODLOCAL, !!paste0(nombre_preg,nom_año) := serbas)
     }
     
     return(serbas_2)
@@ -290,7 +290,7 @@ cal_indicador <- function(nom_indicador,nom_año){
         ~ case_when(.x == "01" ~ 1, TRUE ~ 0),
         .names = "buen_estado_{.col}"
       )) %>% 
-      select(CODLOCAL,var_be,var_tot) %>% 
+      dplyr::select(CODLOCAL,var_be,var_tot) %>% 
       group_by(CODLOCAL) %>% 
       summarise(
         tot1 = n(),
@@ -313,7 +313,7 @@ cal_indicador <- function(nom_indicador,nom_año){
         !!paste0("puerta",nom_año) := redondear(buen_estado_puertabe/puertatot*100,1),
         !!paste0("ventana",nom_año) := redondear(buen_estado_ventanabe/ventanatot*100,1)
       ) %>% 
-      select(CODLOCAL,!!paste0("aulapiso",nom_año):!!paste0("ventana",nom_año))
+      dplyr::select(CODLOCAL,!!paste0("aulapiso",nom_año):!!paste0("ventana",nom_año))
     
     return(infraula_1)
     
@@ -323,7 +323,7 @@ cal_indicador <- function(nom_indicador,nom_año){
     #=====================================#
     
     bd_final <- bd_1 %>% 
-      select(CODLOCAL, internet) %>% 
+      dplyr::select(CODLOCAL, internet) %>% 
       mutate(internet = case_when(internet %in% "2" ~ "No",
                                   internet %in% "1" ~ "Sí",
                                   internet %in% "NO" ~ "No",
@@ -346,7 +346,7 @@ cal_indicador <- function(nom_indicador,nom_año){
     # Base con id
   
     bd_id <- bd_1 %>% 
-      select(CODLOCAL) %>% 
+      dplyr::select(CODLOCAL) %>% 
       unique()
     
     # Base de datos con variables para construir indicadores
@@ -373,7 +373,7 @@ cal_indicador <- function(nom_indicador,nom_año){
              mesasbe = rowSums(across(c(mesasbe_1, mesasbe_2)), na.rm = TRUE)) %>% 
       filter(!mesastot %in% 0) %>% 
       mutate(mesas = redondear(mesasbe/mesastot*100,1)) %>% 
-      select(CODLOCAL,mesas)
+      dplyr::select(CODLOCAL,mesas)
     
     # Construcción de indicador de sillas
     
@@ -383,7 +383,7 @@ cal_indicador <- function(nom_indicador,nom_año){
                    ~sum(., na.rm = T)) %>% 
       filter(!sillastot %in% 0) %>% 
       mutate(sillas = redondear(sillasbe/sillastot*100,1)) %>% 
-      select(CODLOCAL, sillas)
+      dplyr::select(CODLOCAL, sillas)
     
     # Construcción de indicador de pizarras
     
@@ -393,7 +393,7 @@ cal_indicador <- function(nom_indicador,nom_año){
                    ~sum(., na.rm = T)) %>% 
       filter(!pizarratot %in% 0) %>% 
       mutate(pizarras = redondear(pizarrabe/pizarratot*100,1)) %>% 
-      select(CODLOCAL, pizarras)
+      dplyr::select(CODLOCAL, pizarras)
     
     # Integración de indicadores
     
@@ -409,7 +409,7 @@ cal_indicador <- function(nom_indicador,nom_año){
     
     ambientes <- base %>% 
       filter(nom_pregunta %in% "espacio_1") %>% 
-      select(codigo_resp) %>% 
+      dplyr::select(codigo_resp) %>% 
       mutate(codigo_resp = str_trim(codigo_resp, side = "right")) %>% 
       str_split("; ") %>% 
       as.data.frame() %>% 
@@ -417,7 +417,7 @@ cal_indicador <- function(nom_indicador,nom_año){
     
     nom_ambientes <- base %>% 
       filter(nom_pregunta %in% "espacio_1") %>% 
-      select(respuesta) %>% 
+      dplyr::select(respuesta) %>% 
       mutate(respuesta = str_trim(respuesta, side = "right")) %>% 
       str_split("; ") %>% 
       as.data.frame() %>% 
@@ -441,7 +441,7 @@ cal_indicador <- function(nom_indicador,nom_año){
       filter(espacio_2 %in% "1") %>% 
       filter(str_detect(espacio_3, "B0|F0")) %>% 
       mutate(valor = 1) %>% 
-      select(CODLOCAL,espacio_1,valor) %>% 
+      dplyr::select(CODLOCAL,espacio_1,valor) %>% 
       distinct(CODLOCAL, espacio_1, .keep_all = TRUE) %>% 
       pivot_wider(
         names_from = espacio_1,
@@ -450,7 +450,7 @@ cal_indicador <- function(nom_indicador,nom_año){
       ) %>% 
       mutate(biblioteca = case_when(`011` %in% 1 | `012` %in% 1 | `013` %in% 1 ~ 1,
                                     TRUE ~ 0)) %>% 
-      select(-c(`011`,`012`,`013`))
+      dplyr::select(-c(`011`,`012`,`013`))
     
     amb_2 <- amb_1 %>% 
       rename_with(~ nombres_a_renombrar[.x], 
@@ -468,7 +468,7 @@ cal_indicador <- function(nom_indicador,nom_año){
     
     tip_baño <- base %>% 
       filter(nom_pregunta %in% "sshh_1") %>% 
-      select(codigo_resp) %>% 
+      dplyr::select(codigo_resp) %>% 
       mutate(codigo_resp = str_trim(codigo_resp, side = "right")) %>% 
       str_split("; ") %>% 
       as.data.frame() %>% 
@@ -479,7 +479,7 @@ cal_indicador <- function(nom_indicador,nom_año){
     infra_sshh <- bd_1 %>% 
       filter(sshh_1 %in% tip_baño) %>% 
       filter(str_detect(sshh_2, "B0|F0")) %>% 
-      select(CODLOCAL,NUMERO,sshh_pared,sshh_techo,sshh_piso) %>% 
+      dplyr::select(CODLOCAL,NUMERO,sshh_pared,sshh_techo,sshh_piso) %>% 
       mutate_at(vars(sshh_pared,sshh_techo,sshh_piso),
                 ~case_when(. %in% "01" ~ "1",
                            is.na(.) ~ NA_character_,
@@ -490,7 +490,7 @@ cal_indicador <- function(nom_indicador,nom_año){
     # Base con id
     
     bd_id <- infra_sshh %>% 
-      select(CODLOCAL) %>% 
+      dplyr::select(CODLOCAL) %>% 
       unique()
     
     # Rango de CODLOCAL duplicados 
@@ -503,38 +503,38 @@ cal_indicador <- function(nom_indicador,nom_año){
     # Pared en buen estado 
     
     bd_pared <- infra_sshh %>% 
-      select(CODLOCAL,NUMERO,sshh_pared) %>% 
+      dplyr::select(CODLOCAL,NUMERO,sshh_pared) %>% 
       pivot_wider(names_from = NUMERO,
                   values_from = c(sshh_pared)) %>% 
       rowwise() %>% 
       mutate(no_na = sum(!is.na(c_across(min(rango):max(rango)))),
              tot_1 = sum(c_across(min(rango):max(rango)) == "1", na.rm = TRUE)) %>% 
       mutate(paredsshh := redondear(tot_1/no_na * 100, 1)) %>% 
-      select(CODLOCAL,paredsshh)
+      dplyr::select(CODLOCAL,paredsshh)
     
     # Techo en buen estado 
     
     bd_techo <- infra_sshh %>% 
-      select(CODLOCAL,NUMERO,sshh_techo) %>% 
+      dplyr::select(CODLOCAL,NUMERO,sshh_techo) %>% 
       pivot_wider(names_from = NUMERO,
                   values_from = c(sshh_techo)) %>% 
       rowwise() %>% 
       mutate(no_na = sum(!is.na(c_across(min(rango):max(rango)))),
              tot_1 = sum(c_across(min(rango):max(rango)) == "1", na.rm = TRUE)) %>% 
       mutate(techosshh := redondear(tot_1/no_na * 100, 1)) %>% 
-      select(CODLOCAL,techosshh)
+      dplyr::select(CODLOCAL,techosshh)
     
     # Piso en buen estado 
     
     bd_piso <- infra_sshh %>% 
-      select(CODLOCAL,NUMERO,sshh_piso) %>% 
+      dplyr::select(CODLOCAL,NUMERO,sshh_piso) %>% 
       pivot_wider(names_from = NUMERO,
                   values_from = c(sshh_piso)) %>% 
       rowwise() %>% 
       mutate(no_na = sum(!is.na(c_across(min(rango):max(rango)))),
              tot_1 = sum(c_across(min(rango):max(rango)) == "1", na.rm = TRUE)) %>% 
       mutate(pisosshh := redondear(tot_1/no_na * 100, 1)) %>% 
-      select(CODLOCAL,pisosshh)
+      dplyr::select(CODLOCAL,pisosshh)
     
     # Integración de bases de datos
     
@@ -548,14 +548,14 @@ cal_indicador <- function(nom_indicador,nom_año){
     # Base con id
     
     bd_id <- bd_1 %>% 
-      select(CODLOCAL) %>% 
+      dplyr::select(CODLOCAL) %>% 
       unique()
     
     # Tipos de baño considerados 
     
     tip_baño <- base %>% 
       filter(nom_pregunta %in% "sshh_1") %>% 
-      select(codigo_resp) %>% 
+      dplyr::select(codigo_resp) %>% 
       mutate(codigo_resp = str_trim(codigo_resp, side = "right")) %>% 
       str_split("; ") %>% 
       as.data.frame() %>% 
@@ -595,7 +595,7 @@ cal_indicador <- function(nom_indicador,nom_año){
       bd_mobbaños <- bd_datos %>% 
         filter(sshh_1 %in% tip_baño) %>% 
         filter(str_detect(sshh_2, "B0|F0")) %>% 
-        select(CODLOCAL, !!sym(nom_tot1), !!sym(nom_tot1_be),!!sym(nom_tot2),!!sym(nom_tot2_be)) %>% 
+        dplyr::select(CODLOCAL, !!sym(nom_tot1), !!sym(nom_tot1_be),!!sym(nom_tot2),!!sym(nom_tot2_be)) %>% 
         group_by(CODLOCAL) %>% 
         summarise(!!sym(nom_tot1) := sum(!!sym(nom_tot1), na.rm = T),
                   !!sym(nom_tot1_be) := sum(!!sym(nom_tot1_be), na.rm = T),
@@ -604,7 +604,7 @@ cal_indicador <- function(nom_indicador,nom_año){
         mutate(tot = !!sym(nom_tot1) + !!sym(nom_tot2),
                tot_1 = !!sym(nom_tot1_be) + !!sym(nom_tot2_be)) %>% 
         mutate(!!sym(nom_baño_var) := redondear(tot_1/tot*100,1)) %>% 
-        select(CODLOCAL,!!sym(nom_baño_var))
+        dplyr::select(CODLOCAL,!!sym(nom_baño_var))
       
       return(bd_mobbaños)
       
