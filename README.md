@@ -1,4 +1,4 @@
-# Indicadores del censo escolar
+![image](https://github.com/user-attachments/assets/2ecbef63-0294-42be-afd3-a497147638b9)# Indicadores del censo escolar
 
 Funciones para analizar diferentes indicadores del censo escolar.
 
@@ -58,7 +58,7 @@ cal_indicador("Saneamiento","2023")
 
 ```
 
-### Servicios básicos (agua, desagüe, luz)
+### Acceso a servicios básicos (agua, desagüe, luz)
 
 Este indicador da cuenta si el servicio de luz, agua y desagüe que tiene la escuela presenta conexión con la red pública. Se ha construido con las siguientes preguntas del censo escolar:
 
@@ -86,7 +86,7 @@ cal_indicador("Luz","2022")
 
 ```
 
-### Servicio de internet
+### Conexión a servicio de internet
 
 Este indicador informa si la escuela cuenta con servicio de internet. Se ha construido con la siguiente pregunta del censo escolar:
 
@@ -102,4 +102,17 @@ cal_indicador("Internet","2024")
 
 ```
 
+### Condición de la infraestructura de las aulas
+
+Este indicador da cuenta de la condición en la que se encuentran las paredes, pisos, techos, ventanas y puertas de las aulas en su conjunto. Es decir, el indicador señala el porcentaje de aulas que cuentan con el elemento de infraestructura en buen estado. Se ha construido con las siguientes preguntas del censo escolar:
+
+- ¿El ambiente se encuentra en uso?
+- Puertas: cantidad
+- Puertas: estado de conservación
+- Ventanas: cantidad
+- Marco de las ventanas: estado de conservación
+- Vidrios de las ventanas: estado de conservación
+- Paredes: estado de conservación
+- Techo: estado de conservación
+- Piso: estado de conservación
 
