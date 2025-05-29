@@ -18,7 +18,7 @@ La función "descargar_bases" permite descargar las bases del Censo Escolar para
 # Llamar las bases del año 2023
 descargar_bases(c("2023"))
 
-#Llamar las bases del año 2023 y 2024 simultáneamente
+# Llamar las bases del año 2023 y 2024 simultáneamente
 descargar_bases(c("2023","2024"))
 
 ```
