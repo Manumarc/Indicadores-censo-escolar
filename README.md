@@ -106,13 +106,22 @@ cal_indicador("Internet","2024")
 
 Este indicador da cuenta de la condición en la que se encuentran las paredes, pisos, techos, ventanas y puertas de las aulas en su conjunto. Es decir, el indicador señala el porcentaje de aulas que cuentan con el elemento de infraestructura en buen estado. Se ha construido con las siguientes preguntas del censo escolar:
 
-- ¿El ambiente se encuentra en uso?
-- Puertas: cantidad
-- Puertas: estado de conservación
-- Ventanas: cantidad
-- Marco de las ventanas: estado de conservación
-- Vidrios de las ventanas: estado de conservación
-- Paredes: estado de conservación
-- Techo: estado de conservación
-- Piso: estado de conservación
+- *¿El ambiente se encuentra en uso?*
+- *Puertas: cantidad*
+- *Puertas: estado de conservación*
+- *Ventanas: cantidad*
+- *Marco de las ventanas: estado de conservación*
+- *Vidrios de las ventanas: estado de conservación*
+- *Paredes: estado de conservación*
+- *Techo: estado de conservación*
+- *Piso: estado de conservación*
 
+El estado de conservación de los elementos de infraestructura que se han considerado toman los valores siguientes:
+
+| Código 2022 | Descripción 2022              | Código 2023+ | Descripción 2023+           |
+|-------------|-------------------------------|--------------|-----------------------------|
+| 01          | Buen estado                   | 01           | Buen estado                 |
+| 02          | Regular estado                | 02           | Regular estado              |
+| 03          | Mal estado                    | 03           | Mal estado                  |
+| 04          | No tiene, pero lo requiere    | 04           | No aplica                   |
+| 05          | No tiene y no lo requiere     |              |                             |
