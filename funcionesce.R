@@ -1,3 +1,198 @@
+#========================================================#
+# Funciones varias que ayudan a manejar la base de datos #
+#========================================================#
+
+# Conteo de missing en las variables #
+#------------------------------------#
+
+funmiss <- function(x) {
+  
+  sum(is.na(x))/length(x)*100
+  
+  }
+
+# Media pesada # 
+#--------------#
+
+weighted_mean <- function(x, w, ..., na.rm = FALSE){
+  
+  if(na.rm){
+    
+    df_omit <- na.omit(data.frame(x, w))
+    
+    return(weighted.mean(df_omit$x, df_omit$w, ...))
+    
+  } 
+  
+  weighted.mean(x, w, ...)
+}
+
+# Desviación estándar pesada #
+#----------------------------#
+
+weighted_sd <- function(x, weights) {
+  # Eliminar valores faltantes en x y en los pesos correspondientes
+  complete_cases <- complete.cases(x, weights)
+  x <- x[complete_cases]
+  weights <- weights[complete_cases]
+  
+  # Calcular la desviación estándar ponderada
+  weighted_var <- sum(weights * (x - weighted.mean(x, w = weights))^2) / sum(weights)
+  sqrt(weighted_var)
+}
+
+# Cálculo de la moda con pesos #
+#------------------------------#
+
+lamoda_pesos <- function(x, weights = NULL) {
+  if (is.null(weights)) {
+    u <- unique(x)
+    tab <- tabulate(match(x, u))
+    u[tab == max(tab)]
+  } else {
+    # Verificar que la longitud de 'x' y 'weights' sea la misma
+    if (length(x) != length(weights)) {
+      stop("La longitud de 'x' y 'weights' debe ser la misma.")
+    }
+    
+    # Crear una tabla de frecuencia ponderada
+    df <- data.frame(x, weights)
+    df <- df[order(df$x), ]
+    df <- df[!duplicated(df$x), ]
+    df$weighted_freq <- ave(df$weights, df$x, FUN = sum)
+    
+    # Encontrar la moda basada en las frecuencias ponderadas
+    moda <- df[df$weighted_freq == max(df$weighted_freq), "x"]
+    moda
+  }
+}
+
+# Redondear #
+#-----------#
+
+redondear<-function(x,d=0){
+  (floor(x*10**d)+as.numeric((x*10**d-floor(x*10**d))>=0.5))/10**d
+}
+
+# Cambiar punto por coma decimal #
+#--------------------------------#
+
+puntocoma2<-function(x,dec=0){
+  if(is.numeric(x)){
+    if(length(dim(x))==2){
+      gsub("\\.",",",apply(redondear(x,dec), 2, sprintf,fmt=paste0("%.",dec,"f")))
+    }else{gsub("\\.",",",sprintf(paste0("%.",dec,"f"), redondear(x,dec)))}
+  }else{
+    if(length(dim(x))==2){
+      redondear(apply(gsub(",","\\.",x),2,as.numeric),dec)
+    }else{redondear(as.numeric(gsub(",","\\.",x)),dec)}
+  }
+  
+} 
+
+# Ver en Excel #
+#--------------#
+
+show_in_excel <- function(.data){
+  tmp <- paste0(tempfile(),".xlsx")
+  write.xlsx(.data,tmp)
+  browseURL(url=tmp)
+}
+
+# Contar NA en las filas #
+#------------------------#
+
+rowSumsNA <- function(x) rowSums(is.na(x)) 
+
+# Acortar oraciones en variables tipo factor #
+#--------------------------------------------#
+
+str_wrap_factor <- function(x, ...) {
+  levels(x) <- str_wrap(levels(x), ...)
+  x
+}
+
+# Colores UMC #
+#-------------#
+
+color_pre_in <- '#A5A5A5' # Color "Previo al inicio"
+color_inicio <- '#A74D4B' # Color "En inicio"
+color_proces <- '#F79646' # Color "En proceso"
+color_satisf <- '#9BBB59' # Color "Satisfactorio"
+
+# Duplicar texto del "eje Y" hacia la derecha del gráfico #
+#---------------------------------------------------------#
+
+guide_axis_label_trans <- function(label_trans = identity, ...) {
+  axis_guide <- guide_axis(...)
+  axis_guide$label_trans <- rlang::as_function(label_trans)
+  class(axis_guide) <- c("guide_axis_trans", class(axis_guide))
+  axis_guide
+}
+
+# Crear percentiles pesados #
+#---------------------------#
+
+percentil_umc <- function(var, weights, percentil){
+  
+  if (percentil == "tercil") {
+    
+    case_when(
+      {{var}} <= wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.33), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q1",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.33), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.67), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q2",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.67), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q3",
+      TRUE ~ NA_character_
+    )
+    
+  } else if (percentil == "cuartil") {
+    
+    case_when(
+      {{var}} <= wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.25), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q1",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.25), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.50), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q2",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.50), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.75), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q3",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.75), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q4",
+      TRUE ~ NA_character_
+    )
+    
+  } else if (percentil == "quintil") {
+    
+    case_when(
+      {{var}} <= wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.20), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q1",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.20), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.40), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q2",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.40), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.60), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q3",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.60), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.80), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q4",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.80), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q5",
+      TRUE ~ NA_character_
+    )
+    
+  } else if (percentil == "decil") {
+    
+    case_when(
+      {{var}} <= wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.10), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q1",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.10), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.20), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q2",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.20), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.30), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q3",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.30), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.40), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q4",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.40), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.50), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q5",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.50), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.60), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q6",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.60), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.70), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q7",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.70), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.80), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q8",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.80), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.90), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q9",
+      {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.90), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "Grupo Q10",
+      TRUE ~ NA_character_
+    )
+    
+  } else if (percentil == "nse"){
+    
+    case_when({{var}} <= wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.35), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "NSE muy bajo",
+              {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.35), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.60), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "NSE bajo",
+              {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.60), na.rm = TRUE, type=c('(i-1)/(n-1)')) & var <= wtd.quantile(var, weights = {{weights}}, probs = c(0.85), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "NSE medio",
+              {{var}} > wtd.quantile({{var}}, weights = {{weights}}, probs = c(0.85), na.rm = TRUE, type=c('(i-1)/(n-1)')) ~ "NSE alto",
+    )
+    
+  }
+  
+}
+
 #====================================#
 # Descargar bases y libro de códigos #
 #====================================#
