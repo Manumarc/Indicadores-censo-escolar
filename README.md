@@ -24,9 +24,15 @@ descargar_bases(c("2023","2024"))
 ```
 ## Cálculo de indicadores
 
+La función "cal_indicador" permite calcular diferentes indicadores para diferentes años del censo escolar de acuerdo con los años descargados. A continuación se detallan los indicadores considerados dentro de la función.
+
 ### Situación de saneamiento legal
 
-La función "cal_indicador" permite calcular diferentes indicadores para diferentes años del censo escolar de acuerdo con los años descargados. 
+Este indicador da cuenta de la condición de saneamiento físico legal que presentan los locales de la escuela. La pregunta considera es "El terreno, ¿cuenta con saneamiento Físico Legal?" y considera dos tipos de respuestas: "Sí"; "No". Dado que la variable está a nivel de local escolar y que dentro de cada escuela se puede encontrar varios locales escolares, el indicador se construyó con tres categorías:
+
+- Saneado: si todos los locales escolares se encuentran en terreno con saneamiento físico legal.
+- Saneado parcialmente: si alguno de los locales escolares se encuentra en terreno que no cuenta con saneamiento físico legal.
+- No saneado: si todos los locales escolares se encuentran en terreno que no cuenta con saneamiento físico legal.
 
 ```
 # Calcular el indicador de situación de saneamiento del local educativo del año 2023
