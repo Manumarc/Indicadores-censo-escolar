@@ -35,7 +35,7 @@ La función "cal_indicador" permite calcular diferentes indicadores para diferen
 
 Este indicador da cuenta de la condición de saneamiento físico legal que presentan los locales de la escuela. La pregunta que considera es:
 
-  - El terreno, ¿cuenta con saneamiento Físico Legal?
+  - *El terreno, ¿cuenta con saneamiento Físico Legal?*
 
 Dado que la variable está a nivel de local escolar y que dentro de cada local se pueden encontrar varios terrenos, el indicador se construyó con tres categorías:
 
