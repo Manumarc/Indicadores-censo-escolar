@@ -116,7 +116,7 @@ Este indicador da cuenta de la condición en la que se encuentran las paredes, p
 - *Techo: estado de conservación*
 - *Piso: estado de conservación*
 
-El estado de conservación de los elementos de infraestructura que se han considerado toman los valores siguientes:
+El estado de conservación de los elementos de infraestructura que se han considerado toman los valores siguientes dependiendo el año que se esté analizando:
 
 | Código 2022 | Descripción 2022              | Código 2023 en adelante | Descripción 2023 en adelante           |
 |-------------|-------------------------------|--------------|-----------------------------|
@@ -125,3 +125,5 @@ El estado de conservación de los elementos de infraestructura que se han consid
 | 03          | Mal estado                    | 03           | Mal estado                  |
 | 04          | No tiene, pero lo requiere    | 04           | No aplica                   |
 | 05          | No tiene y no lo requiere     |              |                             |
+
+Dado esto, sólo se considera el código "01"
