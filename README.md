@@ -31,13 +31,13 @@ La función "cal_indicador" permite calcular diferentes indicadores para diferen
 
 Este indicador da cuenta de la condición de saneamiento físico legal que presentan los locales de la escuela. La pregunta que considera es:
 
-  - "El terreno, ¿cuenta con saneamiento Físico Legal?", y considera dos tipos de respuestas: "Sí"; "No". 
+  - El terreno, ¿cuenta con saneamiento Físico Legal?
 
 Dado que la variable está a nivel de local escolar y que dentro de cada local se pueden encontrar varios terrenos, el indicador se construyó con tres categorías:
 
-- Saneado: si dentro del local escolar todos los terrenos cuentan con saneamiento físico legal.
-- Saneado parcialmente: si dentro del local escolar uno o varios de los terrenos no cuentan con saneamiento físico legal.
-- No saneado: si dentro del local escolar ninguno de los terrenos cuentan con saneamiento físico legal.
+- **Saneado**: si dentro del local escolar todos los terrenos cuentan con saneamiento físico legal.
+- **Saneado parcialmente**: si dentro del local escolar uno o varios de los terrenos no cuentan con saneamiento físico legal.
+- **No saneado**: si dentro del local escolar ninguno de los terrenos cuentan con saneamiento físico legal.
 
 A continuación se muestra un ejemplo para el uso de dicho indicador. 
 
@@ -50,6 +50,14 @@ cal_indicador("Saneamiento","2023")
 ```
 
 ### Servicios básicos (agua, desagüe, luz)
+
+Este indicador da cuenta si el servicio de luz, agua y desagüe que tiene la escuela presenta conexión con la red pública. Se ha construido con las siguientes preguntas del censo escolar:
+
+- Procedencia de abastecimiento de agua
+- Tipo de conexión de desagüe
+- Procedencia de abastecimiento de energía eléctrica
+
+Para todos estos indicadores se realiza una recodificación de las diferentes opciones de respuesta de cada uno y se construye un indicador dicotómico de "Conexión a red pública" y "Sin conexión a red pública". A continuación se muestra un ejemplo para el uso de dicho indicador. 
 
 ```
 # Calcular el indicador de abastecimiento de agua conectado a la red pública del local educativo del año 2024
