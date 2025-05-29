@@ -15,10 +15,14 @@ devtools::source_url("https://raw.githubusercontent.com/Manumarc/Indicadores-cen
 La función "descargar_bases" permite descargar las bases del Censo Escolar para los años 2023 y/o 2024 de manera automática. Además, las almacena en el entorno del proyecto de Rmarkdown dentro de una carpeta llamada "01 Bases" de manera automática. La función puede descargar las bases de cada año por separado o en conjunto según se requiera. A continuación se muestra la forma en que se usa el código.
 
 ```
-# Llamar las bases del año 2023
+# Llamar las bases del año 2023 #
+#-------------------------------#
+
 descargar_bases(c("2023"))
 
-# Llamar las bases del año 2023 y 2024 simultáneamente
+# Llamar las bases del año 2023 y 2024 simultáneamente #
+#------------------------------------------------------#
+
 descargar_bases(c("2023","2024"))
 
 ```
@@ -60,12 +64,19 @@ Este indicador da cuenta si el servicio de luz, agua y desagüe que tiene la esc
 Para todos estos indicadores se realiza una recodificación de las diferentes opciones de respuesta de cada uno y se construye un indicador dicotómico de "Conexión a red pública" y "Sin conexión a red pública". A continuación se muestra un ejemplo para el uso de dicho indicador. 
 
 ```
-# Calcular el indicador de abastecimiento de agua conectado a la red pública del local educativo del año 2024
+# Calcular el indicador de abastecimiento de agua conectado a la red pública del local educativo del año 2024 #
+#-------------------------------------------------------------------------------------------------------------#
+
 cal_indicador("Agua","2024")
 
-# Calcular el indicador de tipo de desagüe conectado a la red pública del local educativo del año 2024
+# Calcular el indicador de tipo de desagüe conectado a la red pública del local educativo del año 2024 #
+#------------------------------------------------------------------------------------------------------#
+
 cal_indicador("Desagüe","2024")
 
-# Calcular el indicador fuente de luz conectada a la red pública del local educativo del año 2024
+# Calcular el indicador fuente de luz conectada a la red pública del local educativo del año 2024 #
+#-------------------------------------------------------------------------------------------------#
+
 cal_indicador("Luz","2024")
+
 ```
