@@ -144,3 +144,16 @@ cal_indicador("Infraestructura aulas","2024")
 
 ```
 
+### Condición del mobiliario de las aulas
+
+Este indicador da cuenta de la condición en la que se encuentra el mobiliario dentro de las aulas en su conjunto. Es decir, el indicador señala el porcentaje de mesas, sillas y pizarras en buen estado dentro de las aulas. Se ha construido con las siguientes preguntas del censo escolar:
+
+- *¿El ambiente se encuentra en uso?*
+- *Mesas Unipersonales: cantidad*
+- *Mesas Unipersonales: cantidad en buen estado*
+- *Mesas Múltiples: cantidad*
+- *Mesas Múltiples: cantidad en buen estado*
+- *Sillas: cantidad*
+- *Sillas: cantidad en buen estado*
+- *Pizarras: cantidad*
+- *Pizarras: cantidad en buen estado*
