@@ -1,9 +1,10 @@
 # Indicadores del censo escolar
-Funciones para analizar diferentes indicadores del censo escolar
+
+Funciones para analizar diferentes indicadores del censo escolar.
 
 ## Llamar a las funciones 
 
-Para llamar a las funciones desarrolladas se debe usar el siguiente código
+Para llamar a las funciones desarrolladas se debe usar el siguiente código:
 
 ```
 devtools::source_url("https://raw.githubusercontent.com/Manumarc/Indicadores-censo-escolar/refs/heads/main/funcionesce.R")
