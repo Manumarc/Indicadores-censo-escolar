@@ -41,8 +41,10 @@ Dado que la variable está a nivel de local escolar y que dentro de cada local s
 
 A continuación se muestra un ejemplo para el uso de dicho indicador. 
 
-```{r}
-# Calcular el indicador de situación de saneamiento del local educativo del año 2023
+```
+# Calcular el indicador de situación de saneamiento del local educativo del año 2023 #
+#------------------------------------------------------------------------------------#
+
 cal_indicador("Saneamiento","2023")
 
 ```
