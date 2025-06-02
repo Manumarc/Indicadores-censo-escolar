@@ -193,6 +193,55 @@ percentil_umc <- function(var, weights, percentil){
   
 }
 
+# Función para cálculo de PCA #
+#-----------------------------#
+
+pca_umc <- function(x, corr = NULL, puntajes = TRUE){
+
+  #toma un data.frame y aplica PCA
+  #devuelve las varianza explicada, cargas del primer componente y alpha de cronbach
+  
+  # x: data.frame
+  # corr: por defecto aplica correlacion de pearson, podemos colocar 'poly' para indicar
+  #       correlacion policorica
+  # puntajes: logical si es que se quiere puntajes
+
+  if(sum(sapply(x, function(xx) sum(is.na(xx)))) > 0) stop("Es preferible que no hayan NAs en las columnas =)")
+
+  if(is.null(corr)){
+    ee <- eigen(cor(x), symmetric = FALSE) # symmetric=FALSE previene cargas negativas [espero]
+  }else{
+    cor_pol <- psych::polychoric(x)$rho
+    ee <- eigen(cor_pol, symmetric = FALSE)
+    alpha <- psych::alpha(cor_pol, warnings = FALSE)$feldt$alpha[[1]] #Confiabilidad
+  }
+
+  #calculamos varianza (val), cargas (l), pesos (w)
+  val <- ee$values
+  val_sq <- sqrt(val) #desviacion
+  l <- ee$vectors %*% diag(val_sq)
+  w <- ee$vectors %*% diag(1/val_sq)
+
+  if(all(l[, 1] < 0)) {l[, 1] <- l[, 1]*-1; w[, 1] <- w[, 1]*-1} # ¿por que? U_U
+
+  if(puntajes == TRUE){
+    z <- as.matrix(scale(x)) # datos estandarizados y matrix
+    s <- z %*% l # datos estandarizados por sus cargas
+    s <- scale(s)
+  }
+
+  cargas <- data.frame(Item = names(x), Pesos = w[, 1], Cargas = l[, 1])
+  vr <- c("Pesos", "Cargas")
+  cargas[vr] <- apply(cargas[vr], 2, function(x) format(round(x, 3), decimal.mark = ","))
+  varex <- format(round(val[1]/sum(val)*100, 2), decimal.mark = ",")
+
+  if(puntajes == TRUE){
+    return(list(puntajes = s[, 1], indicadores = varex, cargas = cargas, confiabilidad = alpha))}
+  else {
+    return(list(indicadores = varex, cargas = cargas, confiabilidad = alpha))}
+
+}
+
 #====================================#
 # Descargar bases y libro de códigos #
 #====================================#
