@@ -157,3 +157,29 @@ Este indicador da cuenta de la condición en la que se encuentra el mobiliario d
 - *Sillas: cantidad en buen estado*
 - *Pizarras: cantidad*
 - *Pizarras: cantidad en buen estado*
+
+El estado de conservación del mobiliario de las aulas que se han considerado toman los valores siguientes dependiendo el año que se esté analizando:
+
+| Código 2022 | Descripción 2022              | Código 2023 en adelante | Descripción 2023 en adelante           |
+|-------------|-------------------------------|--------------|-----------------------------|
+| 01          | Buen estado                   | 01           | Buen estado                 |
+| 02          | Regular estado                | 02           | Regular estado              |
+| 03          | Mal estado                    | 03           | Mal estado                  |
+| 04          | No tiene, pero lo requiere    | 04           | No aplica                   |
+| 05          | No tiene y no lo requiere     |              |                             |
+
+Dado esto, sólo se considera el código "01" para la construcción de los indicadores, dando como indicador final lo siguiente: 
+
+- Porcentaje de mesas en buen estado (considera mesas unipersonales y múltiples en su conjunto)
+- Porcentaje de sillas en buen estado
+- Porcentaje de pizarras en buen estado
+
+A continuación se muestra un ejemplo para la construcción de dicho indicador. 
+
+```
+# Calcular los indicadores de condición del mobiliario del aula del año 2024 #
+#----------------------------------------------------------------------------#
+
+cal_indicador("Mobiliario aulas","2024")
+
+```
