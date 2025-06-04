@@ -186,6 +186,14 @@ cal_indicador("Mobiliario aulas","2024")
 
 ### 6. Tenencia de espacios educativos
 
+Este indicador da cuenta de la tenencia de ambientes educativos con los que cuenta la escuela. Se ha construido con las siguientes preguntas del censo escolar:
+
+-*Codigo del espacio*
+-*¿El ambiente se encuentra en uso?*
+-*Niveles educativos de la Educación Básica/ETP y/o Carreras/Programas de la Educación Superior que usan el ambiente: Niveles de Educación Básica y ETP*
+
+Se han considerado los siguientes espacios educativos:
+
 | Salas                    | Bibliotecas y ambientes de innovación pedagógica | Espacios deportivos   | Bienestar                         | Servicios generales   | Gestión administrativa y pedagógica     |
 |--------------------------|--------------------------------------------------|------------------------|------------------------------------|------------------------|------------------------------------------|
 | Sala de usos múltiples   | Auditorio                                        | Gimnasio              | Quiosco                            | Depósito general       | Dirección                                |
@@ -195,5 +203,17 @@ cal_indicador("Mobiliario aulas","2024")
 |                          | Aula de innovación pedagógica                   |                        |                                    |                        | Sala de docentes                          |
 |                          |                                                  |                        |                                    |                        | Sala de reuniones                         |
 
+Así, cada variable de ambiente tendrá los valores siguientes:
 
+- ``1'': el local escolar presenta el ambiente educativo
+-  ``0'': el local escolar no presenta el ambiente educativo
 
+A continuación se muestra un ejemplo para la construcción de dichos indicadores. 
+
+```
+# Calcular los indicadores de tenencia de espacios educativos del año 2024 #
+#--------------------------------------------------------------------------#
+
+cal_indicador("Espacios educativos","2024")
+
+```
