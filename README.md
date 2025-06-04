@@ -36,7 +36,7 @@ descargar_bases(c("2022","2023","2024"))
 
 La función "cal_indicador" permite calcular diferentes indicadores para diferentes años del censo escolar de acuerdo con los años descargados. A continuación se detallan los indicadores considerados dentro de la función.
 
-### Situación de saneamiento legal
+### 1. Situación de saneamiento legal
 
 Este indicador da cuenta de la condición de saneamiento físico legal que presentan los locales de la escuela. La pregunta que considera es:
 
@@ -58,7 +58,7 @@ cal_indicador("Saneamiento","2023")
 
 ```
 
-### Acceso a servicios básicos (agua, desagüe, luz)
+### 2. Acceso a servicios básicos (agua, desagüe, luz)
 
 Este indicador da cuenta si el servicio de luz, agua y desagüe que tiene la escuela presenta conexión con la red pública. Se ha construido con las siguientes preguntas del censo escolar:
 
@@ -86,7 +86,7 @@ cal_indicador("Luz","2022")
 
 ```
 
-### Conexión a servicio de internet
+### 3. Conexión a servicio de internet
 
 Este indicador informa si la escuela cuenta con servicio de internet. Se ha construido con la siguiente pregunta del censo escolar:
 
@@ -102,7 +102,7 @@ cal_indicador("Internet","2024")
 
 ```
 
-### Condición de la infraestructura de las aulas
+### 4. Condición de la infraestructura de las aulas
 
 Este indicador da cuenta de la condición en la que se encuentran las paredes, pisos, techos, ventanas y puertas de las aulas en su conjunto. Es decir, el indicador señala el porcentaje de aulas que cuentan con el elemento de infraestructura en buen estado. Se ha construido con las siguientes preguntas del censo escolar:
 
@@ -144,7 +144,7 @@ cal_indicador("Infraestructura aulas","2024")
 
 ```
 
-### Condición del mobiliario de las aulas
+### 5. Condición del mobiliario de las aulas
 
 Este indicador da cuenta de la condición en la que se encuentra el mobiliario dentro de las aulas en su conjunto. Es decir, el indicador señala el porcentaje de mesas, sillas y pizarras en buen estado dentro de las aulas. Se ha construido con las siguientes preguntas del censo escolar:
 
@@ -183,3 +183,17 @@ A continuación se muestra un ejemplo para la construcción de dicho indicador.
 cal_indicador("Mobiliario aulas","2024")
 
 ```
+
+### 6. Tenencia de espacios educativos
+
+| Salas                    | Bibliotecas y ambientes de innovación pedagógica | Espacios deportivos   | Bienestar                         | Servicios generales   | Gestión administrativa y pedagógica     |
+|--------------------------|--------------------------------------------------|------------------------|------------------------------------|------------------------|------------------------------------------|
+| Sala de usos múltiples   | Auditorio                                        | Gimnasio              | Quiosco                            | Depósito general       | Dirección                                |
+|                          | Biblioteca tipo 1                                | Coliseo deportivo      | Cafetería                          | Cuarto de limpieza     | Subdirección                              |
+|                          | Biblioteca tipo 2                                |                        | Tópico                             |                        | Administración                            |
+|                          | Biblioteca tipo 3                                |                        | Espacio temporal para docente      |                        | Oficina de coordinación pedagógica       |
+|                          | Aula de innovación pedagógica                   |                        |                                    |                        | Sala de docentes                          |
+|                          |                                                  |                        |                                    |                        | Sala de reuniones                         |
+
+
+
