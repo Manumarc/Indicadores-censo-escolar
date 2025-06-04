@@ -208,6 +208,8 @@ Así, cada variable de ambiente tendrá los valores siguientes:
 - "1": el local escolar presenta el ambiente educativo
 -  "0": el local escolar no presenta el ambiente educativo
 
+El espacio educativo de "Biblioteca" tendrá el valor de "1" si el local escolar tiene algúno de los tipos de biblioteca identificadas en la selección de espacios educativos.
+
 A continuación se muestra un ejemplo para la construcción de dichos indicadores. 
 
 ```
