@@ -205,8 +205,8 @@ Se han considerado los siguientes espacios educativos:
 
 Así, cada variable de ambiente tendrá los valores siguientes:
 
-- ``1'': el local escolar presenta el ambiente educativo
--  ``0'': el local escolar no presenta el ambiente educativo
+- "1": el local escolar presenta el ambiente educativo
+-  "0": el local escolar no presenta el ambiente educativo
 
 A continuación se muestra un ejemplo para la construcción de dichos indicadores. 
 
