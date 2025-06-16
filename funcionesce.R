@@ -241,7 +241,27 @@ pca_umc <- function(x, corr = NULL, puntajes = TRUE){
     return(list(indicadores = varex, cargas = cargas, confiabilidad = alpha))}
 
 }
+                      
+# Espacio decimal en números #
+#----------------------------#
 
+decimal_format <- function(x) {
+  sapply(x, function(n) {
+    if (is.na(n)) return(NA)
+    
+    entero <- floor(abs(n))  # parte entera sin decimales
+    ndig <- nchar(as.character(entero))
+    
+    if (ndig <= 4) {
+      return(as.character(n))  # lo dejamos igual
+    } else {
+      # Agregar espacio como separador de miles a la parte entera
+      entero_txt <- format(entero, big.mark = " ", scientific = FALSE, trim = TRUE)
+      return(entero_txt)
+    }
+  })
+}
+                      
 #====================================#
 # Descargar bases y libro de códigos #
 #====================================#
